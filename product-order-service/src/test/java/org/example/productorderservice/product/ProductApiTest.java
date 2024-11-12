@@ -1,6 +1,5 @@
 package org.example.productorderservice.product;
 
-import io.restassured.RestAssured;
 import org.example.productorderservice.ApiTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -15,11 +14,7 @@ public class ProductApiTest extends ApiTest {
         ProductSteps.상품등록_요청(request);
 
         var productId = 1L;
-        var response = RestAssured.given().log().all()
-                .when()
-                .get("/products/{productId}", productId)
-                .then()
-                .log().all().extract();
+        var response = ProductSteps.상품_조회_요청(productId);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getString("name")).isEqualTo("상품명");

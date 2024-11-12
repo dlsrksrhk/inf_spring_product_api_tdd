@@ -1,29 +1,34 @@
 package org.example.productorderservice.product;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-@SpringBootTest
 public class ProductServiceTest {
-    @Autowired
     private ProductService productService;
 
-    @Test
-    void 상품조회() {
-        상품등록();
-        final long productId = 1L;
-        final var response = productService.getProduct(productId);
+    @BeforeEach
+    void setUp() {
+        final ProductPort productPort = new ProductPort() {
+            @Override
+            public void save(Product product) {
 
-        assertThat(response).isNotNull();
+            }
+
+            @Override
+            public Product getProduct(long productId) {
+                return new Product("상품명", 1000, DiscountPolicy.NONE);
+            }
+        };
+
+        productService = new ProductService(productPort);
     }
 
-    @Test
-    void 상품등록() {
-        final AddProductRequest request = ProductSteps.상품등록_요청_생성();
-        productService.addProduct(request);
-    }
 
+    @Test
+    void 상품수정() {
+        final Long productId = 1L;
+        final UpdateProductRequest request = new UpdateProductRequest("상품수정", 2000, DiscountPolicy.NONE);
+        productService.updateProduct(productId, request);
+//        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
 }
